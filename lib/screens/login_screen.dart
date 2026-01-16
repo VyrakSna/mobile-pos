@@ -1,8 +1,12 @@
 import 'dart:convert';
 
+import 'package:first_start/helper/popup_dialog.dart';
+import 'package:first_start/repositories/auth_repository.dart';
+import 'package:first_start/screens/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,18 +25,34 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void login() async {
+    PopupDialog.showLoading(context);
     final response = await http.post(
-      Uri.parse('https://49231011d00b.ngrok-free.app/auth/login'),
+      Uri.parse('https://6df5dae6cf1e.ngrok-free.app/auth/login'),
       body: jsonEncode({
         "email": _emailController.text,
         "password": _passwordController.text,
       }),
-      headers: {
-        "Content-Type": "application/json"
-      }
+      headers: {"Content-Type": "application/json"},
     );
+    PopupDialog.dimissLoading(context);
+    final data = json.decode(response.body);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (response.statusCode == 200) {
+      prefs.setString('pos.token', data['token']);
+      AuthRepository.token = data['token'];
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+        (route) => false,
+      );
+    } else {
+      PopupDialog.showError(
+        context,
+        title: 'Login Error',
+        description: data['message'] ?? 'Something went wrong',
+      );
+    }
   }
-
 
   @override
   Widget build(BuildContext context) {
