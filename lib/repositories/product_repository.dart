@@ -100,6 +100,24 @@ class ProductRepository {
     return totalPrice;
   }
 
-  static void checkout() {}
-  static void getRecentTransactions() {}
+  static void checkout() {
+    int trxId = 1;
+    if (allTransactions.isNotEmpty) {
+      trxId = allTransactions.last.id + 1;
+    }
+    Transaction trx = Transaction(
+      id: trxId,
+      code: 'TRX=$trxId',
+      totalPrice: getTotalPrice(),
+      items: cartItems,
+      orderDate: DateTime.now(),
+    );
+    allTransactions.add(trx);
+    getRecentTransactions();
+    clearCart();
+  }
+
+  static void getRecentTransactions([int limit = 5]) {
+    recentTransactions = allTransactions.reversed.take(5).toList();
+  }
 }

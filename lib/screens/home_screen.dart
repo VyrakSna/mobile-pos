@@ -1,11 +1,18 @@
+import 'package:first_start/repositories/product_repository.dart';
 import 'package:first_start/screens/new_sale_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,13 +74,16 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     //New Sale
                     TextButton(
-                      onPressed: () {
-                        Navigator.push(
+                      onPressed: () async {
+                        final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => NewSaleScreen(),
                           ),
                         );
+                        if (result != null) {
+                          setState(() {});
+                        }
                       },
                       style: TextButton.styleFrom(
                         backgroundColor: Color(0xFF00A63E),
@@ -195,20 +205,49 @@ class HomeScreen extends StatelessWidget {
                   child: Text('Recent Sales', style: TextStyle(fontSize: 16)),
                 ),
                 SizedBox(height: 60),
-                Center(
-                  child: Column(
-                    children: [
-                      Lottie.asset('lotties/empty_transaction.json'),
-                      Text(
-                        'No transaction yet. Start a new sale!',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xFF6A7282),
+                ProductRepository.recentTransactions.isEmpty
+                    ? Center(
+                        child: Column(
+                          children: [
+                            Lottie.asset('lotties/empty_transaction.json'),
+                            Text(
+                              'No transaction yet. Start a new sale!',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Color(0xFF6A7282),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : SizedBox(
+                        height: 200,
+                        child: ListView(
+                          shrinkWrap: true,
+                          // physics: NeverScrollableScrollPhysics(),
+                          children: ProductRepository.recentTransactions.map((
+                            trx,
+                          ) {
+                            return Container(
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(trx.code),
+                                      Text(trx.totalPrice.toStringAsFixed(2)),
+                                    ],
+                                  ),
+                                  Text(
+                                    DateFormat(
+                                      'yyyy-MM-dd hh:mm a',
+                                    ).format(trx.orderDate),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ),
-                    ],
-                  ),
-                ),
                 SizedBox(height: 30),
               ],
             ),

@@ -340,7 +340,10 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
                                       Navigator.pop(context);
                                     },
                                   );
-                                  Navigator.pop(context);
+                                  Navigator.pop(
+                                    context,
+                                    'Checkout Successfully',
+                                  );
                                 },
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.symmetric(
