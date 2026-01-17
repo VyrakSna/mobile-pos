@@ -20,7 +20,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isShowPassword = false;
-  final TextEditingController _emailController = TextEditingController();
+  // final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+
   final TextEditingController _passwordController = TextEditingController();
 
   void togglePassword() {
@@ -33,7 +35,8 @@ class _LoginScreenState extends State<LoginScreen> {
     final response = await http.post(
       Uri.parse(ApiDomain.domain + ApiEndPoint.login),
       body: jsonEncode({
-        "email": _emailController.text,
+        // can change to email vh
+        "username": _usernameController.text,
         "password": _passwordController.text,
       }),
       headers: {"Content-Type": "application/json"},
@@ -41,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
     PopupDialog.dimissLoading(context);
     final data = json.decode(response.body);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       prefs.setString('pos.token', data['token']);
       AuthRepository.token = data['token'];
       Navigator.pushAndRemoveUntil(
@@ -90,32 +93,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // Email field
               TextFormField(
-                controller: _emailController,
+                controller: _usernameController,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your email!';
                   }
-                  if (value.contains(
-                    RegExp(
-                      r'/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-                    ),
-                  )) {
-                    return "Incorrect email format!";
-                  }
+                  // enable this for email validation
 
+                  // if (value.contains(
+                  //   RegExp(
+                  //     r'/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                  //   ),
+                  // )) {
+                  //   return "Incorrect email format!";
+                  // }
                   return null;
                 },
                 decoration: InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'you@example.com',
+                  labelText: 'Username',
+                  hintText: 'John123',
                   filled: true,
                   fillColor: const Color(0xFFF5F5F5),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
                     borderSide: BorderSide.none,
                   ),
-                  prefixIcon: const Icon(Icons.alternate_email),
+                  prefixIcon: const Icon(Icons.verified_user),
                 ),
               ),
 
@@ -129,14 +133,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (value == null || value.isEmpty) {
                     return "Please enter your password";
                   }
-                  if (value.length < 8) {
+                  if (value.length < 3) {
                     return "Password too short";
                   }
                   return null;
                 },
                 obscureText: !isShowPassword,
                 decoration: InputDecoration(
-                  labelText: 'Password',
+                  labelText: 'Enter your Password',
                   hintText: '••••••••',
                   filled: true,
                   fillColor: const Color(0xFFF5F5F5),
