@@ -23,4 +23,14 @@ class Product {
     stock: json['stock'] ?? 0,
     image: json['image'] ?? '',
   );
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'price': price,
+      'category': category,
+      'stock': stock,
+      'image': image,
+    };
+  }
 }

@@ -13,11 +13,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _drawerKey = GlobalKey<ScaffoldState>();  
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            Icon(Icons.favorite),
+            SizedBox(width: 20,),
+            Text("Favorite")
+          ],
+        ),
+      ),
+      key: _drawerKey,
       appBar: AppBar(
         title: Text('POS System'),
+        leading: IconButton(onPressed: () {
+          //test
+          _drawerKey.currentState?.openDrawer();
+        }, icon: Icon(Icons.menu)),
         actions: [
           IconButton(onPressed: () {}, icon: Icon(Icons.settings_outlined)),
         ],
