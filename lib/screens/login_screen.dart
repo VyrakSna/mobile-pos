@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:first_start/api/domain/domain.dart';
+import 'package:first_start/api/end_point/api_end_point.dart';
 import 'package:first_start/helper/popup_dialog.dart';
 import 'package:first_start/repositories/auth_repository.dart';
 import 'package:first_start/screens/home_screen.dart';
@@ -27,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void login() async {
     PopupDialog.showLoading(context);
     final response = await http.post(
-      Uri.parse('https://6df5dae6cf1e.ngrok-free.app/auth/login'),
+      Uri.parse(ApiDomain.domain + ApiEndPoint.login),
       body: jsonEncode({
         "email": _emailController.text,
         "password": _passwordController.text,

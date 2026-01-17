@@ -1,8 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:first_start/api/domain/domain.dart';
+import 'package:first_start/api/end_point/api_end_point.dart';
 import 'package:first_start/models/product.dart';
+import 'package:first_start/repositories/auth_repository.dart';
 import 'package:first_start/repositories/product_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:http/http.dart' as http;
 
 class NewSaleScreen extends StatefulWidget {
   const NewSaleScreen({super.key});
@@ -15,6 +22,8 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
   bool isCardEmpty = false;
 
   final TextEditingController _searchcontroller = TextEditingController();
+  List<Product> products = [];
+  bool isLoading = true;
 
   int qty = 0;
   @override
@@ -25,6 +34,26 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
 
   void addToCart(Product product) {
     ProductRepository.addToCart(product);
+    setState(() {});
+  }
+
+  void initData() async {
+    final response = await http.get(
+      Uri.parse(ApiDomain.domain + ApiEndPoint.products),
+      headers: {
+        "Authorization": "Bearer ${AuthRepository.token}",
+        "ngrok-skip-browser-warning": "true",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body) as List;
+      for (var element in data) {
+        products.add(Product.fromJson(element));
+      }
+      ProductRepository.products = products;
+    }
+    isLoading = false;
     setState(() {});
   }
 
@@ -91,95 +120,101 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
               ),
             ),
           ),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            padding: EdgeInsets.all(16),
-            childAspectRatio: 0.625,
-            children: ProductRepository.products
-                .map(
-                  (product) => TextButton(
-                    onPressed: () {
-                      qty++;
-                      addToCart(product);
-                    },
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.all(12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        side: BorderSide(
-                          width: 0.65,
-                          color: Colors.black.withValues(alpha: 0.1),
-                        ),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            constraints: BoxConstraints(
-                              minWidth: double.infinity,
-                              minHeight: 160,
-                              maxHeight: 160,
+          isLoading
+              ? Center(child: CupertinoActivityIndicator())
+              : GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  padding: EdgeInsets.all(16),
+                  childAspectRatio: 0.625,
+                  children: ProductRepository.products
+                      .map(
+                        (product) => TextButton(
+                          onPressed: () {
+                            qty++;
+                            addToCart(product);
+                          },
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.all(12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                              side: BorderSide(
+                                width: 0.65,
+                                color: Colors.black.withValues(alpha: 0.1),
+                              ),
                             ),
-                            decoration: BoxDecoration(
-                              color: Color(0xFFF3F4F6),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Image.network(
-                              product.image,
-                              height: 160,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Icon(
-                                    CupertinoIcons.cube,
-                                    size: 48,
-                                    color: Color(0xFF99A1AF),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                    minWidth: double.infinity,
+                                    minHeight: 160,
+                                    maxHeight: 160,
                                   ),
-                            ),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFF3F4F6),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Image.network(
+                                    product.image,
+                                    height: 160,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (context, error, stackTrace) => Icon(
+                                          CupertinoIcons.cube,
+                                          size: 48,
+                                          color: Color(0xFF99A1AF),
+                                        ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                product.name,
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              SizedBox(height: 14),
+                              Text(
+                                product.category,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xFF6A7282),
+                                ),
+                              ),
+                              SizedBox(height: 14),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '\$${product.price.toStringAsFixed(2)}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color(0xFF00A63E),
+                                    ),
+                                  ),
+                                  Text(
+                                    'Stock: ${product.stock}',
+                                    style: TextStyle(
+                                      color: Color(0xFF6A7282),
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(height: 8),
-                        Text(product.name, style: TextStyle(fontSize: 14)),
-                        SizedBox(height: 14),
-                        Text(
-                          product.category,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFF6A7282),
-                          ),
-                        ),
-                        SizedBox(height: 14),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '\$${product.price.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Color(0xFF00A63E),
-                              ),
-                            ),
-                            Text(
-                              'Stock: ${product.stock}',
-                              style: TextStyle(
-                                color: Color(0xFF6A7282),
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
+                      )
+                      .toList(),
+                ),
           Container(
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
