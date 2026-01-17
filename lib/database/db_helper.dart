@@ -29,22 +29,29 @@ class DbHelper {
   }
 
   Future<void> createTable(Database db) async {
-    await db.execute('CREATE TABLE products (id INTEGER PRIMARY KEY AUTOINCREMENT, name STRING, price DOUBLE, category STRING, stock INTEGER, image STRING);');
+    await db.execute(
+      'CREATE TABLE products (id INTEGER PRIMARY KEY AUTOINCREMENT, name STRING, price DOUBLE, category STRING, stock INTEGER, image STRING);',
+    );
   }
 
   Future<void> saveProductToFavorite(Product product) async {
     final db = await database;
     final result = await db.insert('products', product.toJson());
-
   }
+
   Future<List<Product>> getFavoriteProducts() async {
     final db = await database;
     final result = await db.query('products');
 
     List<Product> products = [];
-    for(var element in result){
+    for (var element in result) {
       products.add(Product.fromJson(element));
     }
     return products;
+  }
+
+  Future<void> removeProductFromFavorite(int id) async {
+    final db = await database;
+    final result = await db.delete('products', where: "id=?", whereArgs: [id]);
   }
 }

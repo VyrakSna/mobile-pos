@@ -1,4 +1,5 @@
 import 'package:first_start/repositories/product_repository.dart';
+import 'package:first_start/screens/favorite_screen.dart';
 import 'package:first_start/screens/new_sale_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,27 +14,42 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final GlobalKey<ScaffoldState> _drawerKey = GlobalKey<ScaffoldState>();  
-  
+  final GlobalKey<ScaffoldState> _drawerKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
         child: ListView(
           children: [
-            Icon(Icons.favorite),
-            SizedBox(width: 20,),
-            Text("Favorite")
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FavoriteScreen()),
+                );
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.favorite),
+                  SizedBox(width: 20),
+                  Text("Favorite"),
+                ],
+              ),
+            ),
           ],
         ),
       ),
       key: _drawerKey,
       appBar: AppBar(
         title: Text('POS System'),
-        leading: IconButton(onPressed: () {
-          //test
-          _drawerKey.currentState?.openDrawer();
-        }, icon: Icon(Icons.menu)),
+        leading: IconButton(
+          onPressed: () {
+            //test
+            _drawerKey.currentState?.openDrawer();
+          },
+          icon: Icon(Icons.menu),
+        ),
         actions: [
           IconButton(onPressed: () {}, icon: Icon(Icons.settings_outlined)),
         ],
