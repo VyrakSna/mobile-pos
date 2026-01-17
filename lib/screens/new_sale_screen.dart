@@ -30,6 +30,7 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    initData();
     super.initState();
   }
 
@@ -58,35 +59,72 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
     setState(() {});
   }
 
+  // _showLoading() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => SizedBox(
+  //       width: 300,
+  //       height: 300,
+  //       child: Padding(
+  //         padding: const EdgeInsets.all(8.0),
+  //         child: Dialog(
+  //           constraints: BoxConstraints(maxHeight: 300, maxWidth: 300),
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(16),
+  //           ),
+  //           child: Column(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             mainAxisSize: MainAxisSize.min,
+  //             crossAxisAlignment: CrossAxisAlignment.center,
+  //             children: [
+  //               CircularProgressIndicator(),
+  //               SizedBox(height: 10, width: 10),
+  //               Text(
+  //                 'Please Wait.....',
+  //                 style: TextStyle(
+  //                   fontWeight: FontWeight.w300,
+  //                   color: Colors.black,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
   _showLoading() {
     showDialog(
       context: context,
-      builder: (context) => SizedBox(
-        width: 160,
-        height: 160,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Dialog(
-            constraints: BoxConstraints(maxHeight: 120, maxWidth: 120),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 8),
-                Text(
-                  'Please Wait.....',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
-                  ),
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        elevation: 6,
+        child: Container(
+          width: 110,
+          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(
+                strokeWidth: 2.2,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Please wait...',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
                 ),
-              ],
-            ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       ),
@@ -110,7 +148,7 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: CupertinoSearchTextField(
-              placeholder: 'Serach products or  scan barcode...',
+              placeholder: 'Search products or  scan barcode...',
               padding: EdgeInsets.all(12),
               prefixInsets: EdgeInsets.only(left: 16),
               suffixIcon: Icon(Icons.center_focus_strong_outlined),
@@ -222,7 +260,10 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
                                     await DbHelper.instance
                                         .saveProductToFavorite(product);
                                   },
-                                  icon: Icon(Icons.favorite_border),
+                                  icon: Icon(
+                                    Icons.favorite_border,
+                                    color: Colors.red,
+                                  ),
                                 ),
                               ),
                             ],
@@ -254,7 +295,11 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
             ),
           ),
           Container(
-            padding: EdgeInsets.all(64),
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ), // reduced
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border(
@@ -268,8 +313,8 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
                 ? Column(
                     children: [
                       Lottie.asset('lotties/empty_cart.json'),
-                      SizedBox(height: 8),
-                      Text(
+                      const SizedBox(height: 8),
+                      const Text(
                         'Cart is empty',
                         style: TextStyle(
                           fontSize: 16,
@@ -280,17 +325,41 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
                   )
                 : ListView(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     children: ProductRepository.cartItems
                         .map(
                           (item) => Container(
+                            width: double.infinity,
+                            margin: const EdgeInsets.symmetric(vertical: 6),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 8,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // Top row
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(item.product.name),
+                                    Expanded(
+                                      child: Text(
+                                        item.product.name,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
                                     IconButton(
                                       onPressed: () {
                                         ProductRepository.removeProductFromCart(
@@ -298,27 +367,72 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
                                         );
                                         setState(() {});
                                       },
-                                      icon: Icon(CupertinoIcons.delete),
+                                      icon: const Icon(CupertinoIcons.delete),
+                                      color: Colors.redAccent,
                                     ),
                                   ],
                                 ),
-                                Text(item.product.price.toStringAsFixed(2)),
+
+                                const SizedBox(height: 6),
+
+                                // Unit price
+                                Text(
+                                  "\$${item.product.price.toStringAsFixed(2)}",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 14),
+
+                                // Bottom row
                                 Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(Icons.remove),
-                                        ),
-                                        Text(item.qty.toString()),
-                                        IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(Icons.add),
-                                        ),
-                                      ],
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          IconButton(
+                                            constraints: const BoxConstraints(),
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () {},
+                                            icon: const Icon(Icons.remove),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Text(
+                                            item.qty.toString(),
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          IconButton(
+                                            constraints: const BoxConstraints(),
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () {},
+                                            icon: const Icon(Icons.add),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    Text(item.totalPrice.toStringAsFixed(2)),
+                                    Text(
+                                      "\$${item.totalPrice.toStringAsFixed(2)}",
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ],
@@ -328,6 +442,7 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
                         .toList(),
                   ),
           ),
+
           Container(
             color: Colors.white,
             padding: EdgeInsets.all(16),

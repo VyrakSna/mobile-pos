@@ -1,13 +1,14 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:first_start/database/db_helper.dart';
 import 'package:first_start/screens/home_screen.dart';
+import 'package:first_start/screens/splash_screen.dart';
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DbHelper.instance.database;
+  // await DbHelper.instance.database;
   runApp(DevicePreview(enabled: kDebugMode, builder: (context) => Myapp()));
 }
 
@@ -17,7 +18,7 @@ class Myapp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomeScreen(),
+      home: SplashScreen(),
       useInheritedMediaQuery: true,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

@@ -1,5 +1,6 @@
 import 'package:first_start/repositories/product_repository.dart';
 import 'package:first_start/screens/favorite_screen.dart';
+import 'package:first_start/screens/history.dart';
 import 'package:first_start/screens/new_sale_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -162,7 +163,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     //history
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => History()),
+                        );
+                        if (result != null) {
+                          setState(() {});
+                        }
+                      },
                       style: TextButton.styleFrom(
                         // backgroundColor: Color(0xFF00A63E),
                         shape: RoundedRectangleBorder(
@@ -185,6 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
+                    
                     //Print Last
                     TextButton(
                       onPressed: () {},
@@ -229,20 +239,79 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.black.withValues(alpha: 0.1),
               ),
             ),
+            // child: Column(
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   children: [
+            //     Align(
+            //       alignment: Alignment.centerLeft,
+            //       child: Text('Recent Sales', style: TextStyle(fontSize: 16)),
+            //     ),
+            //     SizedBox(height: 60),
+            //     ProductRepository.recentTransactions.isEmpty
+            //         ? Center(
+            //             child: Column(
+            //               children: [
+            //                 Lottie.asset('lotties/empty_transaction.json'),
+            //                 Text(
+            //                   'No transaction yet. Start a new sale!',
+            //                   style: TextStyle(
+            //                     fontSize: 16,
+            //                     color: Color(0xFF6A7282),
+            //                   ),
+            //                 ),
+            //               ],
+            //             ),
+            //           )
+            //         : SizedBox(
+            //             height: 200,
+            //             child: ListView(
+            //               shrinkWrap: true,
+            //               // physics: NeverScrollableScrollPhysics(),
+            //               children: ProductRepository.recentTransactions.map((
+            //                 trx,
+            //               ) {
+            //                 return Container(
+            //                   child: Column(
+            //                     children: [
+            //                       Row(
+            //                         children: [
+            //                           Text(trx.code),
+            //                           Text(trx.totalPrice.toStringAsFixed(2)),
+            //                         ],
+            //                       ),
+            //                       Text(
+            //                         DateFormat(
+            //                           'yyyy-MM-dd hh:mm a',
+            //                         ).format(trx.orderDate),
+            //                       ),
+            //                     ],
+            //                   ),
+            //                 );
+            //               }).toList(),
+            //             ),
+            //           ),
+            //     SizedBox(height: 30),
+            //   ],
+            // ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text('Recent Sales', style: TextStyle(fontSize: 16)),
+                const Text(
+                  'Recent Sales',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
-                SizedBox(height: 60),
+                const SizedBox(height: 16),
+
                 ProductRepository.recentTransactions.isEmpty
                     ? Center(
                         child: Column(
                           children: [
-                            Lottie.asset('lotties/empty_transaction.json'),
-                            Text(
+                            Lottie.asset(
+                              'lotties/empty_transaction.json',
+                              height: 160,
+                            ),
+                            const SizedBox(height: 12),
+                            const Text(
                               'No transaction yet. Start a new sale!',
                               style: TextStyle(
                                 fontSize: 16,
@@ -253,26 +322,63 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       )
                     : SizedBox(
-                        height: 200,
+                        height: 220,
                         child: ListView(
                           shrinkWrap: true,
-                          // physics: NeverScrollableScrollPhysics(),
                           children: ProductRepository.recentTransactions.map((
                             trx,
                           ) {
                             return Container(
+                              width: double.infinity,
+                              margin: const EdgeInsets.symmetric(vertical: 6),
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(14),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 6,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  // Top row: code + total
                                   Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(trx.code),
-                                      Text(trx.totalPrice.toStringAsFixed(2)),
+                                      Text(
+                                        trx.code,
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      Text(
+                                        "\$${trx.totalPrice.toStringAsFixed(2)}",
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ],
                                   ),
+
+                                  const SizedBox(height: 6),
+
+                                  // Date
                                   Text(
                                     DateFormat(
                                       'yyyy-MM-dd hh:mm a',
                                     ).format(trx.orderDate),
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey.shade600,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -280,7 +386,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           }).toList(),
                         ),
                       ),
-                SizedBox(height: 30),
+
+                const SizedBox(height: 24),
               ],
             ),
           ),

@@ -120,9 +120,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                             product.id,
                           );
                           products.remove(product);
-                          setState(() {
-                            
-                          });
+                          setState(() {});
                         },
                         icon: Icon(Icons.favorite_border),
                       ),
