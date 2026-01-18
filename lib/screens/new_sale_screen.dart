@@ -219,7 +219,7 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
                                   ),
                                   SizedBox(height: 8),
                                   Text(
-                                    product.name,
+                                    product.title,
                                     style: TextStyle(fontSize: 14),
                                   ),
                                   SizedBox(height: 14),
@@ -353,7 +353,7 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        item.product.name,
+                                        item.product.title,
                                         style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600,
