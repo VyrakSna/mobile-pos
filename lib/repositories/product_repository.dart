@@ -1,6 +1,7 @@
 import 'package:first_start/models/cart_item.dart';
 import 'package:first_start/models/product.dart';
 import 'package:first_start/models/transaction.dart';
+import 'package:first_start/screens/new_sale_screen.dart';
 
 class ProductRepository {
   static List<Product> products = [
@@ -50,6 +51,7 @@ class ProductRepository {
   static List<Transaction> allTransactions = [];
   static List<Transaction> recentTransactions = [];
   static int totalQty = 0;
+  static int stock = 100;
   static void addToCart(Product product) {
     if (cartItems.isEmpty) {
       final CartItem item = CartItem(id: 1, product: product);
@@ -73,6 +75,7 @@ class ProductRepository {
         cartItems.add(item);
       }
     }
+    stock--;
     getTotalQty();
   }
 

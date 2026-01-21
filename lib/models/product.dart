@@ -4,7 +4,7 @@ class Product {
   String title;
   String category;
   double price;
-  int stock;
+  int stock = 100;
   String image;
 
   Product({
@@ -23,7 +23,7 @@ class Product {
     title: json['title'] ?? '',
     category: json['category'] ?? '',
     price: json['price'] ?? 0.0,
-    stock: json['stock'] ?? 0,
+    stock: 100,
     image: json['image'] ?? '',
   );
 
@@ -33,7 +33,7 @@ class Product {
       'title': title,
       'price': price,
       'category': category,
-      'stock': stock,
+      'stock': 100,
       'image': image,
     };
   }

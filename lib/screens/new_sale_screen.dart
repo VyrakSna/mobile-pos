@@ -21,10 +21,10 @@ class NewSaleScreen extends StatefulWidget {
 
 class _NewSaleScreenState extends State<NewSaleScreen> {
   bool isCardEmpty = false;
-
   final TextEditingController _searchcontroller = TextEditingController();
   List<Product> products = [];
   bool isLoading = true;
+  int stock = 100;
 
   int qty = 0;
   @override
@@ -174,6 +174,7 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
                         (product) => TextButton(
                           onPressed: () {
                             qty++;
+                            product.stock--;
                             addToCart(product);
                           },
                           style: TextButton.styleFrom(
@@ -220,6 +221,8 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
                                   SizedBox(height: 8),
                                   Text(
                                     product.title,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(fontSize: 14),
                                   ),
                                   SizedBox(height: 14),
@@ -253,6 +256,7 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
                                   ),
                                 ],
                               ),
+
                               Align(
                                 alignment: Alignment.topRight,
                                 child: IconButton(
