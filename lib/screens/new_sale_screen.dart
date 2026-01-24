@@ -7,6 +7,7 @@ import 'package:first_start/database/db_helper.dart';
 import 'package:first_start/models/product.dart';
 import 'package:first_start/repositories/auth_repository.dart';
 import 'package:first_start/repositories/product_repository.dart';
+import 'package:first_start/screens/favorite_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -24,14 +25,24 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
   final TextEditingController _searchcontroller = TextEditingController();
   List<Product> products = [];
   bool isLoading = true;
+  bool isFavorite = false;
   int stock = 100;
-
   int qty = 0;
   @override
   void initState() {
     // TODO: implement initState
     initData();
     super.initState();
+  }
+
+  List<Product> favoriteProducts = [];
+  void loadFavorites() async {
+    favoriteProducts = await DbHelper.instance.getFavoriteProducts();
+    setState(() {});
+  }
+
+  bool alreadyFavorite(Product product) {
+    return favoriteProducts.any((p) => p.id == product.id);
   }
 
   void addToCart(Product product) {
@@ -47,6 +58,7 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
         "ngrok-skip-browser-warning": "true",
       },
     );
+    favoriteProducts = await DbHelper.instance.getFavoriteProducts();
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body) as List;
@@ -261,11 +273,25 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
                                 alignment: Alignment.topRight,
                                 child: IconButton(
                                   onPressed: () async {
-                                    await DbHelper.instance
-                                        .saveProductToFavorite(product);
+                                    if (alreadyFavorite(product)) {
+                                      await DbHelper.instance
+                                          .removeProductFromFavorite(
+                                            product.id,
+                                          );
+                                      favoriteProducts.removeWhere(
+                                        (p) => p.id == product.id,
+                                      );
+                                    } else {
+                                      await DbHelper.instance
+                                          .saveProductToFavorite(product);
+                                      favoriteProducts.add(product);
+                                    }
+                                    setState(() {});
                                   },
                                   icon: Icon(
-                                    Icons.favorite_border,
+                                    alreadyFavorite(product)
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
                                     color: Colors.red,
                                   ),
                                 ),
@@ -316,7 +342,7 @@ class _NewSaleScreenState extends State<NewSaleScreen> {
             child: ProductRepository.cartItems.isEmpty
                 ? Column(
                     children: [
-                      Lottie.asset('lotties/empty_cart.json'),
+                      Lottie.asset('assets/lotties/empty_cart.json'),
                       const SizedBox(height: 8),
                       const Text(
                         'Cart is empty',

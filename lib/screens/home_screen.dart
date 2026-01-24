@@ -194,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    
+
                     //Print Last
                     TextButton(
                       onPressed: () {},
@@ -307,7 +307,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           children: [
                             Lottie.asset(
-                              'lotties/empty_transaction.json',
+                              'assets/lotties/empty_transaction.json',
                               height: 160,
                             ),
                             const SizedBox(height: 12),

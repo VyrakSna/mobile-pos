@@ -96,7 +96,7 @@ class History extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    "${item.product.name} × ${item.qty}",
+                                    "${item.product.title} × ${item.qty}",
                                     style: const TextStyle(fontSize: 14),
                                   ),
                                 ),

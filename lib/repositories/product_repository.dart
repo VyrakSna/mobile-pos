@@ -7,7 +7,7 @@ class ProductRepository {
   static List<Product> products = [
     Product(
       id: 1,
-      name: 'Premium Coffe Beans',
+      // name: 'Premium Coffe Beans',
       title: '',
       category: 'Beverage',
       price: 12.99,
@@ -17,7 +17,7 @@ class ProductRepository {
     ),
     Product(
       id: 2,
-      name: 'Fresh Sourdough Bread',
+      // name: 'Fresh Sourdough Bread',
       title: '',
       category: 'Bakery',
       price: 4.99,
@@ -27,7 +27,7 @@ class ProductRepository {
     ),
     Product(
       id: 3,
-      name: 'Artisan Chocolate Bar',
+      // name: 'Artisan Chocolate Bar',
       title: '',
       category: 'Snacks',
       price: 5.99,
@@ -37,7 +37,7 @@ class ProductRepository {
     ),
     Product(
       id: 4,
-      name: 'A Blue Lagoon Cocktail',
+      // name: 'A Blue Lagoon Cocktail',
       title: '',
       category: 'Beverages',
       price: 8.99,

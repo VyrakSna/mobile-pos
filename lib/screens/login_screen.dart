@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             children: [
               // Lottie animation
-              Lottie.asset('lotties/login.json', height: 180),
+              Lottie.asset('assets/lotties/login.json', height: 180),
 
               const SizedBox(height: 32),
 

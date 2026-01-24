@@ -81,7 +81,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                           ),
                         ),
                         SizedBox(height: 8),
-                        Text(product.name, style: TextStyle(fontSize: 14)),
+                        Text(product.title, style: TextStyle(fontSize: 14)),
                         SizedBox(height: 14),
                         Text(
                           product.category,
@@ -122,7 +122,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                           products.remove(product);
                           setState(() {});
                         },
-                        icon: Icon(Icons.favorite_border),
+                        icon: Icon(Icons.favorite, color: Colors.red),
                       ),
                     ),
                   ],

@@ -1,6 +1,5 @@
 class Product {
   int id;
-  String name;
   String title;
   String category;
   double price;
@@ -9,7 +8,6 @@ class Product {
 
   Product({
     required this.id,
-    required this.name,
     required this.title,
     required this.category,
     required this.price,
@@ -19,17 +17,15 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
     id: json['id'],
-    name: json['name'] ?? '',
     title: json['title'] ?? '',
     category: json['category'] ?? '',
-    price: json['price'] ?? 0.0,
+    price: (json['price'] as num?)?.toDouble() ?? 0.0,
     stock: 100,
     image: json['image'] ?? '',
   );
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
       'title': title,
       'price': price,
       'category': category,

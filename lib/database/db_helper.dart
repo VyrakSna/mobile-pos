@@ -18,7 +18,7 @@ class DbHelper {
     String path = join(await getDatabasesPath(), 'pos.db');
     return await openDatabase(
       path,
-      version: 3,
+      version: 5,
       onUpgrade: (db, oldVersion, newVersion) {
         // Update database/table structure
       },
@@ -30,7 +30,7 @@ class DbHelper {
 
   Future<void> createTable(Database db) async {
     await db.execute(
-      'CREATE TABLE products (id INTEGER PRIMARY KEY AUTOINCREMENT, name STRING, price DOUBLE, category STRING, stock INTEGER, image STRING);',
+      'CREATE TABLE products (id INTEGER PRIMARY KEY AUTOINCREMENT, title STRING, price DOUBLE, category STRING, stock INTEGER, image STRING);',
     );
   }
 
